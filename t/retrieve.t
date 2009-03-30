@@ -7,5 +7,5 @@ use_ok('WWW::DanDomain');
 
 ok(my $wd = WWW::DanDomain->new());
 
-can_ok($wd, qw(handle));
+can_ok($wd, qw(retrieve));
 
