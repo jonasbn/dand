@@ -13,21 +13,19 @@ our $VERSION = '0.01';
 sub new {
 	my ( $class, $param ) = @_;
 
-	my $mech = WWW::Mechanize->new();
-
 	my $self = bless {
 		base_url => 'http://www.billigespil.dk/admin',
 		username => $param->{username},
 		password => $param->{password},
 		url      => $param->{url},
-		mech     => $mech,
+		mech     => $param->{mech} || WWW::Mechanize->new(),
 	}, $class;
 
 	return $self;
 }
 
 sub retrieve {
-	my $self = shift;
+	my ( $self, $stat ) = @_;
 
 	$self->{mech}->get( $self->{base_url} )
 		or croak "Unable to retrieve URL: $@";
@@ -45,15 +43,14 @@ sub retrieve {
 	$self->{mech}->get( $self->{url} ) or croak "Unable to retrieve URL: $@";
 
 	my $content = $self->{mech}->content();
-
 	
-	return $self->lineprocessor( \$content );
+	return $self->lineprocessor( \$content, $stat );
 }
 
 sub lineprocessor {
 	my ($self, $content) = @_;
 	
-	return $$content;
+	return $content;
 }
 
 1;
