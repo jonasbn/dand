@@ -19,6 +19,7 @@ sub new {
 		password => $param->{password},
 		url      => $param->{url},
 		mech     => $param->{mech} || WWW::Mechanize->new(),
+		verbose  => $param->{verbose} || 0,
 	}, $class;
 
 	return $self;
