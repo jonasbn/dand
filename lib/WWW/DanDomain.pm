@@ -31,7 +31,7 @@ sub retrieve {
 	$self->{mech}->get( $self->{base_url} )
 		or croak "Unable to retrieve URL: $@";
 
-	$self->{mech}->follow_link( url => $self->{base_url} );
+	#$self->{mech}->follow_link( url => $self->{base_url} );
 
 	$self->{mech}->submit_form(
 		form_number => 0,
