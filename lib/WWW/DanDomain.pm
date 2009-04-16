@@ -4,7 +4,6 @@ package WWW::DanDomain;
 
 use warnings;
 use strict;
-use Data::Dumper;
 use WWW::Mechanize;
 use Carp qw(croak);
 
@@ -19,7 +18,8 @@ sub new {
         password => $param->{password},
         url      => $param->{url},
         mech     => $param->{mech}
-            || WWW::Mechanize->new( agent => 'WWW::DanDomain 0.01' ),
+        ? $param->{mech}
+        : WWW::Mechanize->new( agent => 'WWW::DanDomain 0.01' ),
         verbose => $param->{verbose} || 0,
     }, $class;
 
@@ -203,23 +203,47 @@ I<untouched>.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+The module requires Internet access to make sense and an account with DanDomain
+with username and password is required.
+
 =head1 DEPENDENCIES
 
+=over
+
+=item * L<WWW::Mechanize>
+
+=item * L<Carp>
+
+=back
+
 =head1 TEST AND QUALITY
+
+The tests are based on L<Test::MockObject::Extends>
+
+=head2 TEST COVERAGE
+
+---------------------------- ------ ------ ------ ------ ------ ------ ------
+File                           stmt   bran   cond    sub    pod   time  total
+---------------------------- ------ ------ ------ ------ ------ ------ ------
+blib/lib/WWW/DanDomain.pm     100.0  100.0  100.0  100.0  100.0  100.0  100.0
+Total                         100.0  100.0  100.0  100.0  100.0  100.0  100.0
+---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 QUALITY AND CODING STANDARD
 
 =head1 BUGS AND LIMITATIONS
 
+No known bugs at this time.
+
 =head1 BUG REPORTING
 
-Please report any bugs or feature requests to:
+Please report any bugs or feature requests via:
 
 =over
 
-=item * via email: C<bug-www-dandomain at rt.cpan.org>
+=item * email: C<bug-www-dandomain at rt.cpan.org>
 
-=item * via HTTP: L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=WWW-DanDomain>
+=item * HTTP: L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=WWW-DanDomain>
 
 =back
 
@@ -234,10 +258,6 @@ Please report any bugs or feature requests to:
 =item * L<http://www.dandomain.dk>
 
 =back
-
-=head1 BUGS
-
-No known bugs at this time.
 
 =head1 SUPPORT
 

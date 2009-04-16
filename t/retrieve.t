@@ -4,13 +4,15 @@
 
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 6;
 use Carp;
 use Test::MockObject::Extends;
 use File::Slurp qw(slurp);
 use WWW::DanDomain;
+use Test::Exception;
 
 my $mech = Test::MockObject::Extends->new('WWW::Mechanize');
+my $wd;
 
 $mech->mock(
     'content',
@@ -27,7 +29,7 @@ $mech->set_true('get', 'follow_link', 'submit_form');
 
 my $content;
 
-my $wd = WWW::DanDomain->new({
+$wd = WWW::DanDomain->new({
 	username => 'topshop',
 	password => 'topsecret',
 	url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
@@ -42,3 +44,27 @@ ok($content = $wd->retrieve());
 isa_ok($content, 'SCALAR');
 
 is($$content, 'test');
+
+$mech->set_series('get', undef, undef);
+
+$wd = WWW::DanDomain->new({
+	username => 'topshop',
+	password => 'topsecret',
+	url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+    verbose  => 1,
+    mech     => $mech,
+});
+
+dies_ok { $content = $wd->retrieve(); };
+
+$mech->set_series('get', 1, undef);
+
+$wd = WWW::DanDomain->new({
+	username => 'topshop',
+	password => 'topsecret',
+	url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+    verbose  => 1,
+    mech     => $mech,
+});
+
+dies_ok { $content = $wd->retrieve(); };
