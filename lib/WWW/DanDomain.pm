@@ -18,7 +18,9 @@ sub new {
 		username => $param->{username},
 		password => $param->{password},
 		url      => $param->{url},
-		mech     => $param->{mech} || WWW::Mechanize->new(),
+		mech     => $param->{mech} || WWW::Mechanize->new(
+			agent => 'WWW::DanDomain 0.01'
+		),
 		verbose  => $param->{verbose} || 0,
 	}, $class;
 
@@ -30,8 +32,6 @@ sub retrieve {
 
 	$self->{mech}->get( $self->{base_url} )
 		or croak "Unable to retrieve URL: $@";
-
-	#$self->{mech}->follow_link( url => $self->{base_url} );
 
 	$self->{mech}->submit_form(
 		form_number => 0,
@@ -62,7 +62,7 @@ __END__
 
 =head1 NAME
 
-WWW::DanDomain - class to assist in interacting with DanDomain web interface
+WWW::DanDomain - class to assist in interacting with DanDomain admin interface
 
 =head1 VERSION
 
@@ -77,25 +77,125 @@ Perhaps a little code snippet.
 
 	use WWW::DanDomain;
 
-	my $foo = WWW::DanDomain->new();
-	...
+	#All mandatory parameters
+	my $wd = WWW::DanDomain->new({
+		username => 'topshop',
+		password => 'topsecret',
+		url      =>
+	});
 
-=head1 EXPORT
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+	#with verbosity enabled
+	my $wd = WWW::DanDomain->new({
+		username => 'topshop',
+		password => 'topsecret',
+		url      =>
+		verbose  => 1,
+	});
 
+
+	#With custom WWW::Mechanize object
+	use WWW::Mechanize;
+
+	my $mech = WWW::Mechanize->new(agent => 'MEGAnice bot');
+
+	my $wd = WWW::DanDomain->new({
+		username => 'topshop',
+		password => 'topsecret',
+		url      => $mech,
+	});
+	
+	
+	#The intended use
+	package My::WWW::DanDomain::Subclass;
+	
+	sub lineprocessor {
+		my ( $self, $content ) = @_;
+		
+		#Note the lines terminations are Windows CRLF
+		my @lines = split /\r\n/, $$content;
+		
+		...
+		
+		}
+	}
+	
+	
+	#Using your new class
+	my $my = My::WWW::DanDomain::Subclass->new({
+		username => 'topshop',
+		password => 'topsecret',
+		url      => 	
+	});
+	
+	my $content = $my->retrieve();
+	
+	print $$content;
+	
+	
 =head1 METHODS
-
-=head2 retrieve
 
 =head2 new
 
+Parameters:
+
+=over
+
+=item * username, the username to access DanDomain 
+
+=item * password, the password to access DanDomain
+
+=item * url, the URL to retrieve data from (L</retrieve>)
+
+=item * mech, a L<WWW::Mechanize> object if you have a pre instantiated object.
+The parameter is optional.
+
+=item * verbose, a flag for indicating verbosity, default is 0 (disabled), the
+parameter is optional
+
+=back
+
+=head2 retrieve
+
+Parameters:
+
+=over
+
+=item * a hash reference, the reference can be populated with statistic
+information based on the lineprocessing (L</lineprocessor>) initiated from
+L</retrieve>.
+
+=back
+
+The method returns a scalar reference to a string containing the content
+retrieved from the URL provided to the contructor (L</new>). If the
+L<lineprocessor> method is overwritten you can manipulate the content prior
+to being returned.
+
 =head2 lineprocessor
+
+This is a stub and it might go away in the future. It does takes the content
+retrieved (see: L</retrieve>) from the URL parameter provided to the constructor
+(see: L</new>).
+
+Parameters:
+
+=over
+
+=item * a scalar reference to a string to be processed line by line
+
+=back
+
+The stud does however not do anything, but it returns the scalar reference
+I<untouched>.
 
 =head1 AUTHOR
 
-jonasbn, C<< <jonasbn at cpan.org> >>
+=over
+
+=item * jonasbn, C<< <jonasbn at cpan.org> >>
+
+=back
 
 =head1 BUGS
 
@@ -134,6 +234,13 @@ L<http://search.cpan.org/dist/WWW-DanDomain>
 =back
 
 =head1 ACKNOWLEDGEMENTS
+
+=over
+
+=item * Andy Lester (petdance) the author L<WWW::Mechanize>, this module makes
+easy things easy and hard things possible.
+
+=back
 
 =head1 COPYRIGHT & LICENSE
 
