@@ -11,47 +11,46 @@ use Carp qw(croak);
 our $VERSION = '0.01';
 
 sub new {
-	my ( $class, $param ) = @_;
+    my ( $class, $param ) = @_;
 
-	my $self = bless {
-		base_url => 'http://www.billigespil.dk/admin',
-		username => $param->{username},
-		password => $param->{password},
-		url      => $param->{url},
-		mech     => $param->{mech} || WWW::Mechanize->new(
-			agent => 'WWW::DanDomain 0.01'
-		),
-		verbose  => $param->{verbose} || 0,
-	}, $class;
+    my $self = bless {
+        base_url => 'http://www.billigespil.dk/admin',
+        username => $param->{username},
+        password => $param->{password},
+        url      => $param->{url},
+        mech     => $param->{mech}
+            || WWW::Mechanize->new( agent => 'WWW::DanDomain 0.01' ),
+        verbose => $param->{verbose} || 0,
+    }, $class;
 
-	return $self;
+    return $self;
 }
 
 sub retrieve {
-	my ( $self, $stat ) = @_;
+    my ( $self, $stat ) = @_;
 
-	$self->{mech}->get( $self->{base_url} )
-		or croak "Unable to retrieve URL: $@";
+    $self->{mech}->get( $self->{base_url} )
+        or croak "Unable to retrieve base URL: $@";
 
-	$self->{mech}->submit_form(
-		form_number => 0,
-		fields      => {
-			UserName => $self->{username},
-			Password => $self->{password},
-		}
-	);
+    $self->{mech}->submit_form(
+        form_number => 0,
+        fields      => {
+            UserName => $self->{username},
+            Password => $self->{password},
+        }
+    );
 
-	$self->{mech}->get( $self->{url} ) or croak "Unable to retrieve URL: $@";
+    $self->{mech}->get( $self->{url} ) or croak "Unable to retrieve URL: $@";
 
-	my $content = $self->{mech}->content();
-	
-	return $self->lineprocessor( \$content, $stat );
+    my $content = $self->{mech}->content();
+
+    return $self->lineprocessor( \$content, $stat );
 }
 
 sub lineprocessor {
-	my ($self, $content) = @_;
-	
-	return $content;
+    my ( $self, $content ) = @_;
+
+    return $content;
 }
 
 1;
@@ -66,89 +65,92 @@ WWW::DanDomain - class to assist in interacting with DanDomain admin interface
 
 =head1 VERSION
 
-Version 0.01
+This documentation describes version 0.01
 
 =head1 SYNOPSIS
 
-The module lets the user interact with DanDomains administrative interface, so
-tasks of processing data exports etc. can be automated.
+The module lets the user interact with DanDomains administrative web interface.
+This can be used for automating tasks of processing data exports etc.
 
-Perhaps a little code snippet.
+    use WWW::DanDomain;
 
-	use WWW::DanDomain;
-
-	#All mandatory parameters
-	my $wd = WWW::DanDomain->new({
-		username => 'topshop',
-		password => 'topsecret',
-		url      =>
-	});
+    #All mandatory parameters
+    my $wd = WWW::DanDomain->new({
+        username => 'topshop',
+        password => 'topsecret',
+        url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+    });
 
 
-	#with verbosity enabled
-	my $wd = WWW::DanDomain->new({
-		username => 'topshop',
-		password => 'topsecret',
-		url      =>
-		verbose  => 1,
-	});
+    #with verbosity enabled
+    my $wd = WWW::DanDomain->new({
+        username => 'topshop',
+        password => 'topsecret',
+        url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+        verbose  => 1,
+    });
 
 
-	#With custom WWW::Mechanize object
-	use WWW::Mechanize;
+    #With custom WWW::Mechanize object
+    use WWW::Mechanize;
 
-	my $mech = WWW::Mechanize->new(agent => 'MEGAnice bot');
+    my $mech = WWW::Mechanize->new(agent => 'MEGAnice bot');
 
-	my $wd = WWW::DanDomain->new({
-		username => 'topshop',
-		password => 'topsecret',
-		url      => $mech,
-	});
-	
-	
-	#The intended use
-	package My::WWW::DanDomain::Subclass;
-	
-	sub lineprocessor {
-		my ( $self, $content ) = @_;
-		
-		#Note the lines terminations are Windows CRLF
-		my @lines = split /\r\n/, $$content;
-		
-		...
-		
-		}
-	}
-	
-	
-	#Using your new class
-	my $my = My::WWW::DanDomain::Subclass->new({
-		username => 'topshop',
-		password => 'topsecret',
-		url      => 	
-	});
-	
-	my $content = $my->retrieve();
-	
-	print $$content;
-	
-	
+    my $wd = WWW::DanDomain->new({
+        username => 'topshop',
+        password => 'topsecret',
+        url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+        mech     => $mech,
+    });
+    
+    
+    #The intended use
+    package My::WWW::DanDomain::Subclass;
+    
+    sub lineprocessor {
+        my ( $self, $content ) = @_;
+        
+        #Note the lines terminations are Windows CRLF
+        my @lines = split /\r\n/, $$content;
+        
+        ...
+        
+        }
+    }
+    
+    
+    #Using your new class
+    my $my = My::WWW::DanDomain::Subclass->new({
+        username => 'topshop',
+        password => 'topsecret',
+        url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+    });
+    
+    my $content = $my->retrieve();
+    
+    print $$content;
+
+=head1 DESCRIPTION
+
 =head1 METHODS
 
 =head2 new
 
-Parameters:
+This is the constructor.
+
+The constructor takes a hash reference as input. The hash reference should
+contain keys according to the following conventions:
 
 =over
 
-=item * username, the username to access DanDomain 
+=item * username, the mandatory username to access DanDomain 
 
-=item * password, the password to access DanDomain
+=item * password, the mandatory password to access DanDomain
 
-=item * url, the URL to retrieve data from (L</retrieve>)
+=item * url, the mandatory URL to retrieve data from (L</retrieve>)
 
-=item * mech, a L<WWW::Mechanize> object if you have a pre instantiated object.
-The parameter is optional.
+=item * mech, a L<WWW::Mechanize> object if you have a pre instantiated object,
+The parameter is optional
 
 =item * verbose, a flag for indicating verbosity, default is 0 (disabled), the
 parameter is optional
@@ -186,30 +188,62 @@ Parameters:
 
 =back
 
-The stud does however not do anything, but it returns the scalar reference
+The stub does however not do anything, but it returns the scalar reference
 I<untouched>.
 
-=head1 AUTHOR
+=head1 DIAGNOSTICS
 
 =over
 
-=item * jonasbn, C<< <jonasbn at cpan.org> >>
+=item * Unable to retrieve base URL: $@
+
+=item * Unable to retrieve URL: $@
+
+=back
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 DEPENDENCIES
+
+=head1 TEST AND QUALITY
+
+=head1 QUALITY AND CODING STANDARD
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 BUG REPORTING
+
+Please report any bugs or feature requests to:
+
+=over
+
+=item * via email: C<bug-www-dandomain at rt.cpan.org>
+
+=item * via HTTP: L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=WWW-DanDomain>
+
+=back
+
+=head1 DEVELOPMENT
+
+=head1 TODO
+
+=head1 SEE ALSO
+
+=over
+
+=item * L<http://www.dandomain.dk>
 
 =back
 
 =head1 BUGS
 
-Please report any bugs or feature requests to
-C<bug-www-dandomain at rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=WWW-DanDomain>.
-I will be notified, and then you'll automatically be notified of progress on
-your bug as I make changes.
+No known bugs at this time.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-	perldoc WWW::DanDomain
+    perldoc WWW::DanDomain
 
 You can also look for information at:
 
@@ -233,6 +267,14 @@ L<http://search.cpan.org/dist/WWW-DanDomain>
 
 =back
 
+=head1 AUTHOR
+
+=over
+
+=item * jonasbn, C<< <jonasbn at cpan.org> >>
+
+=back
+
 =head1 ACKNOWLEDGEMENTS
 
 =over
@@ -242,7 +284,7 @@ easy things easy and hard things possible.
 
 =back
 
-=head1 COPYRIGHT & LICENSE
+=head1 LICENSE AND COPYRIGHT
 
 Copyright 2009 jonasbn, all rights reserved.
 
