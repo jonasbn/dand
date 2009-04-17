@@ -9,4 +9,4 @@ use_ok('WWW::DanDomain');
 
 ok(my $wd = WWW::DanDomain->new());
 
-can_ok($wd, qw(lineprocessor));
+can_ok($wd, qw(processor));

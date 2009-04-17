@@ -44,10 +44,10 @@ sub retrieve {
 
     my $content = $self->{mech}->content();
 
-    return $self->lineprocessor( \$content, $stat );
+    return $self->processor( \$content, $stat );
 }
 
-sub lineprocessor {
+sub processor {
     my ( $self, $content ) = @_;
 
     return $content;
@@ -107,7 +107,7 @@ This can be used for automating tasks of processing data exports etc.
     #The intended use
     package My::WWW::DanDomain::Subclass;
     
-    sub lineprocessor {
+    sub processor {
         my ( $self, $content ) = @_;
         
         #Note the lines terminations are Windows CRLF
@@ -164,17 +164,17 @@ Parameters:
 =over
 
 =item * a hash reference, the reference can be populated with statistic
-information based on the lineprocessing (L</lineprocessor>) initiated from
+information based on the lineprocessing (L</processor>) initiated from
 L</retrieve>.
 
 =back
 
 The method returns a scalar reference to a string containing the content
 retrieved from the URL provided to the contructor (L</new>). If the
-L<lineprocessor> method is overwritten you can manipulate the content prior
+L</processor> method is overwritten you can manipulate the content prior
 to being returned.
 
-=head2 lineprocessor
+=head2 processor
 
 This is a stub and it might go away in the future. It does takes the content
 retrieved (see: L</retrieve>) from the URL parameter provided to the constructor
