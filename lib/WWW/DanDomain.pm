@@ -19,7 +19,7 @@ sub new {
         url      => $param->{url},
         mech     => $param->{mech}
         ? $param->{mech}
-        : WWW::Mechanize->new( agent => 'WWW::DanDomain 0.01' ),
+        : WWW::Mechanize->new( agent => __PACKAGE__ . "-$VERSION" ),
         verbose => $param->{verbose} || 0,
     }, $class;
 
@@ -132,6 +132,23 @@ This can be used for automating tasks of processing data exports etc.
 
 =head1 DESCRIPTION
 
+This module is a simple wrapper around L<WWW::Mechnize> it assists the user
+in getting going with automating tasks related to the DanDomain administrative
+web interface.
+
+Such as:
+
+=over
+
+=item * manipulating data exports (removing, adjusting, calculating, adding
+columns)
+
+=item * filling in missing data (combining data)
+
+=item * converting formats (from CSV to XML)
+
+=back
+
 =head1 METHODS
 
 =head2 new
@@ -197,7 +214,21 @@ I<untouched>.
 
 =item * Unable to retrieve base URL: $@
 
+The base URL provided to retrieve gives an error.
+
+Please see: L<http://search.cpan.org/perldoc?HTTP%3A%3AResponse> or
+L<http://search.cpan.org/~gaas/libwww-perl/lib/HTTP/Status.pm>
+
+Test the URL in your browser to investigate.
+
 =item * Unable to retrieve URL: $@
+
+The base URL provided to retrieve gives an error.
+
+Please see: L<http://search.cpan.org/perldoc?HTTP%3A%3AResponse> or
+L<http://search.cpan.org/~gaas/libwww-perl/lib/HTTP/Status.pm>
+
+Test the URL in your browser to investigate.
 
 =back
 
@@ -218,7 +249,8 @@ with username and password is required.
 
 =head1 TEST AND QUALITY
 
-The tests are based on L<Test::MockObject::Extends>
+The tests are based on L<Test::MockObject::Extends> and example data are
+mocked dummy data. Please see the TODO section.
 
 =head2 TEST COVERAGE
 
@@ -230,6 +262,10 @@ Total                         100.0  100.0  100.0  100.0  100.0  100.0  100.0
 ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 QUALITY AND CODING STANDARD
+
+The code passes L<Perl::Critic> tests a severity: 1 (brutal)
+
+L<Perl::Tidy> resource file, can be obtained from the original author
 
 =head1 BUGS AND LIMITATIONS
 
@@ -249,7 +285,24 @@ Please report any bugs or feature requests via:
 
 =head1 DEVELOPMENT
 
+=over
+
+=item * Repository: L<http://github.com/jonasbn/www-dandomain/tree/master>
+
+=back
+
 =head1 TODO
+
+=over
+
+=item * Most of the work is done in the classes inheriting from this class,
+there could however be work to do in the maintenance area, making this class
+more informative if failing
+
+=item * I would like to add some integration test scripts so I can see that the
+package works with real data apart from the mock.
+
+=back
 
 =head1 SEE ALSO
 
@@ -294,6 +347,18 @@ L<http://search.cpan.org/dist/WWW-DanDomain>
 =item * jonasbn, C<< <jonasbn at cpan.org> >>
 
 =back
+
+=head1 MOTIVATION
+
+This module grew out of a small script using L<WWW::Mechanize> to fetch some
+data from a website and changing it to satisfy the client utilizing the data.
+
+More a more scripts where based on the original script giving a lot of redundant
+code. Finally I refactored the lot to use some common code base.
+
+After some time I refactored to an object oriented structure making it even
+easier to maintain and adding more clients. This made the actual connectivity
+into a package (this package) letting it loose as open source.
 
 =head1 ACKNOWLEDGEMENTS
 
