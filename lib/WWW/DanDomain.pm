@@ -50,6 +50,10 @@ sub retrieve {
 sub processor {
     my ( $self, $content ) = @_;
 
+    if ($self->{verbose}) {
+        print STDERR $content;
+    }
+
     return $content;
 }
 
