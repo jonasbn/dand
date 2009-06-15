@@ -18,6 +18,7 @@ my $build = Module::Build->new(
 	},
     build_requires       => {
         'Test::More'     => '0',
+		'Module::Build'  => '0',
     },
     requires             => {
         'Data::Dumper'   => '0',    #Debugging
