@@ -326,6 +326,10 @@ You can also look for information at:
 
 =over 4
 
+=item * Official Wiki
+
+L<http://logiclab.jira.com/wiki/display/DAND/Home+-+WWW-DanDomain>
+
 =item * AnnoCPAN: Annotated CPAN documentation
 
 L<http://annocpan.org/dist/WWW-DanDomain>
