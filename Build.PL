@@ -23,13 +23,14 @@ my $build = Module::Build->new(
     requires             => {
         'Data::Dumper'   => '0',    #Debugging
         'WWW::Mechanize' => '0',
+		'WWW::Mechanize::Cached' => '0',
         'Carp'           => '0',
     },
     meta_merge     => {
     	resources => {
       		homepage => 'http://www-dandomain.logicLAB.org',
       		bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=WWW-DanDomain',
-      		repository  => 'http://github.com/jonasbn/www-dandomain/tree/master',
+      		repository  => 'http://logicLAB.jira.com/svn/DAND',
     	}
   },
 
