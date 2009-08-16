@@ -33,7 +33,7 @@ $wd = WWW::DanDomain->new({
 	username => 'topshop',
 	password => 'topsecret',
 	url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
-    verbose  => 1,
+    verbose  => $ENV{TEST_VERBOSE},
     mech     => $mech,
 });
 
@@ -51,7 +51,7 @@ $wd = WWW::DanDomain->new({
 	username => 'topshop',
 	password => 'topsecret',
 	url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
-    verbose  => 1,
+    verbose  => $ENV{TEST_VERBOSE},
     mech     => $mech,
 });
 
@@ -63,7 +63,7 @@ $wd = WWW::DanDomain->new({
 	username => 'topshop',
 	password => 'topsecret',
 	url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
-    verbose  => 1,
+    verbose  => $ENV{TEST_VERBOSE},
     mech     => $mech,
 });
 
