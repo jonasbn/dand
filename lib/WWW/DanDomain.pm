@@ -295,6 +295,9 @@ Total                         100.0  100.0  100.0  100.0  100.0  100.0  100.0
 
 The code passes L<Perl::Critic> tests a severity: 1 (brutal)
 
+L<Perl::Critic> resource file, can be located in the t/ directory of the
+distribution F<t/perlcriticrc>
+
 L<Perl::Tidy> resource file, can be obtained from the original author
 
 =head1 BUGS AND LIMITATIONS
