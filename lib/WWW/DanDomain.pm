@@ -282,7 +282,23 @@ with username and password is required.
 The tests are based on L<Test::MockObject::Extends> and example data are
 mocked dummy data. Please see the TODO section.
 
+The test suite uses the following environment variables as flags:
+
+=over
+
+=item TEST_AUTHOR, to test prerequisites, using L<Test::Prereq>
+
+=item TEST_CRITIC, to do a static analysis of the code, using L<Perl::Critic>,
+see also QUALITY AND CODING STANDARD
+
+=back
+
 =head2 TEST COVERAGE
+
+The following data are based on an analysis created using L<Devel::Cover> and
+the distributions own test suite, instantiated the following way.
+
+    % ./Build testcover --verbose
 
 ---------------------------- ------ ------ ------ ------ ------ ------ ------
 File                           stmt   bran   cond    sub    pod   time  total
@@ -294,6 +310,14 @@ Total                         100.0  100.0  100.0  100.0  100.0  100.0  100.0
 =head1 QUALITY AND CODING STANDARD
 
 The code passes L<Perl::Critic> tests a severity: 1 (brutal)
+
+The following policies have been disabled:
+
+=over
+
+=item L<Perl::Critic::Policy::InputOutput::RequireBracedFileHandleWithPrint>
+
+=back
 
 L<Perl::Critic> resource file, can be located in the t/ directory of the
 distribution F<t/perlcriticrc>
