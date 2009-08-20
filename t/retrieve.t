@@ -10,6 +10,7 @@ use Test::MockObject::Extends;
 use File::Slurp qw(slurp);
 use WWW::DanDomain;
 use Test::Exception;
+use Env qw(TEST_VERBOSE);
 
 my $mech = Test::MockObject::Extends->new('WWW::Mechanize');
 my $wd;
@@ -33,7 +34,7 @@ $wd = WWW::DanDomain->new({
 	username => 'topshop',
 	password => 'topsecret',
 	url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
-    verbose  => $ENV{TEST_VERBOSE},
+    verbose  => $TEST_VERBOSE,
     mech     => $mech,
 });
 
@@ -51,7 +52,7 @@ $wd = WWW::DanDomain->new({
 	username => 'topshop',
 	password => 'topsecret',
 	url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
-    verbose  => $ENV{TEST_VERBOSE},
+    verbose  => $TEST_VERBOSE,
     mech     => $mech,
 });
 
@@ -63,7 +64,7 @@ $wd = WWW::DanDomain->new({
 	username => 'topshop',
 	password => 'topsecret',
 	url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
-    verbose  => $ENV{TEST_VERBOSE},
+    verbose  => $TEST_VERBOSE,
     mech     => $mech,
 });
 

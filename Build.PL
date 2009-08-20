@@ -22,6 +22,7 @@ my $build = Module::Build->new(
         'Test::MockObject::Extends' => '0',
         'Test::Perl::Critic'        => '0',
         'Test::Prereq::Build'       => '0',
+        'Env'                       => '0',
     },
     requires => {
         'Data::Dumper'           => '0',    #Debugging
