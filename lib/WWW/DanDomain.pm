@@ -7,8 +7,12 @@ use strict;
 use WWW::Mechanize;
 use WWW::Mechanize::Cached;
 use Carp qw(croak);
+use Class::Rebless;
 
-our $VERSION = '0.02';
+use WWW::DanDomain::Auth;
+use WWW::DanDomain::NoAuth;
+
+our $VERSION = '1.00';
 
 sub new {
     my ( $class, $param ) = @_;
@@ -22,38 +26,17 @@ sub new {
     } else {
         $mech = WWW::Mechanize->new( agent => $agent );
     }
-
-    my $self = bless {
-        base_url => 'http://www.billigespil.dk/admin',
-        username => $param->{username},
-        password => $param->{password},
-        url      => $param->{url},
-        verbose  => $param->{verbose} || 0,
-        mech     => $mech,
-    }, $class;
+    $param->{mech} = $mech;
+    
+    my $self;
+    
+    if ($param->{username} && $param->{password}) {
+        $self = WWW::DanDomain::Auth->new($param);
+    } else {
+        $self = WWW::DanDomain::NoAuth->new($param);
+    }
 
     return $self;
-}
-
-sub retrieve {
-    my ( $self, $stat ) = @_;
-
-    $self->{mech}->get( $self->{base_url} )
-        or croak "Unable to retrieve base URL: $@";
-
-    $self->{mech}->submit_form(
-        form_number => 0,
-        fields      => {
-            UserName => $self->{username},
-            Password => $self->{password},
-        }
-    );
-
-    $self->{mech}->get( $self->{url} ) or croak "Unable to retrieve URL: $@";
-
-    my $content = $self->{mech}->content();
-
-    return $self->processor( \$content, $stat );
 }
 
 sub processor {

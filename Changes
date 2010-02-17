@@ -2,6 +2,26 @@ Revision history for WWW-DanDomain
 
 $Id$
 
+1.00    Major release, 17.02.2010 update not required
+
+New requirements met. DanDomain offers IP authorization instead of credential
+based authentication and authorization. So we need not crawl to get to our
+target as prior versions have done.
+
+So a Factory pattern has been implemented using WWW::DanDomain as the factory.
+
+This means that based on the parameters provided to the constructor one of two
+objects are returned.
+
+- WWW::DanDomain::NoAuth, if no credentials are provided IP authorization is
+  expected
+
+- WWW::DanDomain::Auth, with credentials normal authorization and authentication
+  is expected
+
+Introduced a SUPER class for the two new implementation classes mentioned above.
+
+
 0.02    Minor release, 16.09.2009, update not required
 
 - Fixed dependencies, WWW::Mechanize was not listed, so smoke tests were
