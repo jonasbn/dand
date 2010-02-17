@@ -44,3 +44,23 @@ sub retrieve {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+WWW::DanDomain::Auth
+
+=head1 METHODS
+
+=head2 retrieve
+
+=head2 new
+
+=head1 AUTHOR
+
+Jonas B. Nielsen Cjonasbn) C<< <jonasbn@cpan.org> >>
+
+=head1 LICENSE
+
+=cut

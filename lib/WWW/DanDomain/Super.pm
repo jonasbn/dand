@@ -33,3 +33,23 @@ sub processor {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+WWW::DanDomain::Super
+
+=head1 METHODS
+
+=head2 processor
+
+=head2 new
+
+=head1 AUTHOR
+
+Jonas B. Nielsen Cjonasbn) C<< <jonasbn@cpan.org> >>
+
+=head1 LICENSE
+
+=cut
