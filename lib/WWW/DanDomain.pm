@@ -30,23 +30,21 @@ sub new {
     
     my $self;
     
-    if ($param->{username} && $param->{password}) {
+    if ($param->{username} || $param->{password}) {
+        if ((not $param->{username}) or (not $param->{password})) {
+            croak 'Both username and password is required for authentication';
+        }        
         $self = WWW::DanDomain::Auth->new($param);
+        
     } else {
         $self = WWW::DanDomain::NoAuth->new($param);
     }
 
-    return $self;
-}
-
-sub processor {
-    my ( $self, $content ) = @_;
-
-    if ( $self->{verbose} ) {
-        print STDERR "${$content}.\n";
+    if ($class !~ m/^WWW::DanDomain((?=::(NoAuth|Auth))|$)/) {
+        Class::Rebless->rebless($self, $class);
     }
 
-    return $content;
+    return $self;
 }
 
 1;
@@ -57,11 +55,11 @@ __END__
 
 =head1 NAME
 
-WWW::DanDomain - class to assist in interacting with DanDomain admin interface
+WWW::DanDomain - factory for interacting with DanDomain admin interface
 
 =head1 VERSION
 
-This documentation describes version 0.01
+This documentation describes version 1.00
 
 =head1 SYNOPSIS
 
@@ -136,9 +134,10 @@ This can be used for automating tasks of processing data exports etc.
 
 =head1 DESCRIPTION
 
-This module is a simple wrapper around L<WWW::Mechnize> it assists the user
-in getting going with automating tasks related to the DanDomain administrative
-web interface.
+This class is a factory for creating objects, which can interact with DanDomain's
+administrive web interface. It is basically just simple wrappers around
+L<WWW::Mechanize> it assists the user in getting going with automating tasks
+related to the DanDomain administrative web interface.
 
 Such as:
 
@@ -149,7 +148,7 @@ columns)
 
 =item * filling in missing data (combining data)
 
-=item * converting formats (from CSV to XML)
+=item * converting formats (from CSV to XML / JSON / CSV and what not)
 
 =back
 
@@ -157,16 +156,25 @@ columns)
 
 =head2 new
 
-This is the constructor.
+This is the constructor/factory.
 
 The constructor takes a hash reference as input. The hash reference should
-contain keys according to the following conventions:
+contain parameters satisfying the required parameters for the object you want
+the factory to create.
+
+For both products of the factory:
 
 =over
 
-=item * username, the mandatory username to access DanDomain 
+=item L<WWW::DanDomain::Auth>
 
-=item * password, the mandatory password to access DanDomain
+=item L<WWW::DanDomain:.NoAuth>
+
+=back
+
+The following parameters are available:
+
+=over
 
 =item * url, the mandatory URL to retrieve data from (L</retrieve>)
 
@@ -187,43 +195,34 @@ The parameter is optional
 
 =back
 
-=head2 retrieve
-
-Parameters:
+For L<WWW::DanDomain::NoAuth> the following additional parameters are required:
 
 =over
 
-=item * a hash reference, the reference can be populated with statistic
-information based on the lineprocessing (L</processor>) initiated from
-L</retrieve>.
+=item * username, the mandatory username to access DanDomain 
+
+=item * password, the mandatory password to access DanDomain
 
 =back
 
-The method returns a scalar reference to a string containing the content
-retrieved from the URL provided to the contructor (L</new>). If the
-L</processor> method is overwritten you can manipulate the content prior
-to being returned.
+If these parameters are present, a L<WWW::DanDomain::Auth> object is returned.
+Both have to be present, if only one of them is present the construction of the
+object dies.
 
-=head2 processor
+If none of the above parameters are present a L<WWW::DanDomain::NoAuth> object
+is returned.
 
-This is a stub and it might go away in the future. It does takes the content
-retrieved (see: L</retrieve>) from the URL parameter provided to the constructor
-(see: L</new>).
-
-Parameters:
-
-=over
-
-=item * a scalar reference to a string to be processed line by line
-
-=back
-
-The stub does however not do anything, but it returns the scalar reference
-I<untouched>.
+This is the barebones logic of the factory, encapsulation of the actual
+construction.
 
 =head1 DIAGNOSTICS
 
 =over
+
+=item * Both username and password is required for authentication
+
+If you want the factory to provide a L<WWW::DanDomain::Auth> object you have to
+provide both B<username> and B<password>.
 
 =item * Unable to retrieve base URL: $@
 
@@ -263,7 +262,7 @@ with username and password is required.
 =head1 TEST AND QUALITY
 
 The tests are based on L<Test::MockObject::Extends> and example data are
-mocked dummy data. Please see the TODO section.
+mocked dummy data. Please see the L</TODO> section.
 
 The test suite uses the following environment variables as flags:
 
@@ -286,9 +285,14 @@ the distributions own test suite, instantiated the following way.
 ---------------------------- ------ ------ ------ ------ ------ ------ ------
 File                           stmt   bran   cond    sub    pod   time  total
 ---------------------------- ------ ------ ------ ------ ------ ------ ------
-blib/lib/WWW/DanDomain.pm     100.0  100.0  100.0  100.0  100.0  100.0  100.0
-Total                         100.0  100.0  100.0  100.0  100.0  100.0  100.0
+blib/lib/WWW/DanDomain.pm      97.4   87.5   50.0  100.0  100.0   32.0   92.1
+...lib/WWW/DanDomain/Auth.pm  100.0  100.0    n/a  100.0  100.0   41.1  100.0
+...b/WWW/DanDomain/NoAuth.pm  100.0  100.0    n/a  100.0  100.0   17.5  100.0
+...ib/WWW/DanDomain/Super.pm  100.0    n/a  100.0  100.0  100.0    9.4  100.0
+Total                          99.0   92.9   62.5  100.0  100.0  100.0   96.7
 ---------------------------- ------ ------ ------ ------ ------ ------ ------
+
+The data are based on version: 1.00
 
 =head1 QUALITY AND CODING STANDARD
 
@@ -310,6 +314,24 @@ L<Perl::Tidy> resource file, can be obtained from the original author
 =head1 BUGS AND LIMITATIONS
 
 No known bugs at this time.
+
+From version 1.00 and onwards the objects returned from the constructor  (L<WWW::DanDomain/new>) are not of the class: L<WWW::DanDomain>, they are either
+of the classes:
+
+=over
+
+=item * L<WWW::DanDomain::Auth>
+
+=item * L<WWW::DanDomain::NoAuth>
+
+=back
+
+Depending on the parameters provided, please see L</new> for details. Apart from
+the type returned methods and parameters are kept intact.
+
+It was considered to do a rebless (See: L<Class::Rebless/rebless>) so the original
+type was kept intact, but with the factory then also acting as SUPER class sounding
+like a bad idea and it was skipped again.
 
 =head1 BUG REPORTING
 
@@ -337,7 +359,7 @@ Please report any bugs or feature requests via:
 
 =item * Most of the work is done in the classes inheriting from this class,
 there could however be work to do in the maintenance area, making this class
-more informative if failing
+more informative when/if failing
 
 =item * I would like to add some integration test scripts so I can see that the
 package works with real data apart from the mock.
@@ -349,6 +371,12 @@ package works with real data apart from the mock.
 =over
 
 =item * L<http://www.dandomain.dk>
+
+=item * L<http://search.cpan.org/~gaas/libwww-perl/lib/HTTP/Status.pm>
+
+=item * L<http://search.cpan.org/perldoc?HTTP%3A%3AResponse>
+
+=item * L<http://www.logicLAB.org>
 
 =back
 
@@ -404,22 +432,30 @@ After some time I refactored to an object oriented structure making it even
 easier to maintain and adding more clients. This made the actual connectivity
 into a package (this package) letting it loose as open source.
 
+The system in which L<WWW::DanDomain> plays a small, but important part is
+constantly evolving and new features keep defining, so the OOP aspect showed
+to be a good strategy, major changes have however meant that it has been
+necessary to make some major leaps, introducing factors, which could prove
+to break backwards compatibility - but the most important aspect is to solve
+the task at hand.
+
 =head1 ACKNOWLEDGEMENTS
 
 =over
 
 =item * Andy Lester (petdance) the author of L<WWW::Mechanize> and
 L<WWW::Mechanize:Cached>, this module makes easy things easy and hard things
-possible.
+possible
 
-=item * Steen Schnack, who understand the power and flexibility of computer
-programming and custom solutions and who gave me the assignment.
+=item * Steen Schnack, understanding the power and flexibility of computer
+programming and custom solutions and who gave me the assignment in the first
+place
 
 =back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2009 jonasbn, all rights reserved.
+Copyright 2009-2010 jonasbn, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

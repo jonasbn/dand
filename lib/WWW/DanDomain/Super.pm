@@ -25,10 +25,6 @@ sub new {
 sub processor {
     my ( $self, $content ) = @_;
 
-    if ( $self->{verbose} ) {
-        print STDERR "${$content}.\n";
-    }
-
     return $content;
 }
 
@@ -42,9 +38,24 @@ WWW::DanDomain::Super
 
 =head1 METHODS
 
+=head2 new
+
 =head2 processor
 
-=head2 new
+This is a stub and it might go away in the future. It does takes the content
+retrieved (see: L</retrieve>) from the URL parameter provided to the constructor
+(see: L</new>).
+
+Parameters:
+
+=over
+
+=item * a scalar reference to a string to be processed line by line
+
+=back
+
+The stub does however not do anything, but it returns the scalar reference
+I<untouched>.
 
 =head1 AUTHOR
 

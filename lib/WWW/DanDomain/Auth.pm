@@ -53,9 +53,24 @@ WWW::DanDomain::Auth
 
 =head1 METHODS
 
+=head2 new
+
 =head2 retrieve
 
-=head2 new
+Parameters:
+
+=over
+
+=item * a hash reference, the reference can be populated with statistic
+information based on the lineprocessing (L</processor>) initiated from
+L</retrieve>.
+
+=back
+
+The method returns a scalar reference to a string containing the content
+retrieved from the URL provided to the contructor (L</new>). If the
+L</processor> method is overwritten you can manipulate the content prior
+to being returned.
 
 =head1 AUTHOR
 
