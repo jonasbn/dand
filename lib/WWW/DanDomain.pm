@@ -8,7 +8,7 @@ use WWW::Mechanize;
 use WWW::Mechanize::Cached;
 use Carp qw(croak);
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub new {
     my ( $class, $param ) = @_;
@@ -38,19 +38,25 @@ sub new {
 sub retrieve {
     my ( $self, $stat ) = @_;
 
-    $self->{mech}->get( $self->{base_url} )
-        or croak "Unable to retrieve base URL: $@";
-
-    $self->{mech}->submit_form(
-        form_number => 0,
-        fields      => {
-            UserName => $self->{username},
-            Password => $self->{password},
+    if ($self->{username} || $self->{password}) {
+        if ((not $self->{username}) or (not $self->{password})) {
+            croak 'Both username and password is required for authentication';
         }
-    );
 
+        $self->{mech}->get( $self->{base_url} )
+            or croak "Unable to retrieve base URL: $@";
+
+        $self->{mech}->submit_form(
+            form_number => 0,
+            fields      => {
+                UserName => $self->{username},
+                Password => $self->{password},
+            }
+        );
+    }
+    
     $self->{mech}->get( $self->{url} ) or croak "Unable to retrieve URL: $@";
-
+    
     my $content = $self->{mech}->content();
 
     return $self->processor( \$content, $stat );
@@ -78,7 +84,7 @@ WWW::DanDomain - class to assist in interacting with DanDomain admin interface
 
 =head1 VERSION
 
-This documentation describes version 0.01
+This documentation describes version 0.03
 
 =head1 SYNOPSIS
 
@@ -88,12 +94,18 @@ This can be used for automating tasks of processing data exports etc.
     use WWW::DanDomain;
 
     #All mandatory parameters
+    #Please note DanDomain can be configured to use authorization on IP
+    #meaning authentication is unnessesary
+    my $wd = WWW::DanDomain->new({
+        url => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+    });
+
+    #With optional authentication credentials
     my $wd = WWW::DanDomain->new({
         username => 'topshop',
         password => 'topsecret',
-        url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+        url => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
     });
-
 
     #with verbosity enabled
     my $wd = WWW::DanDomain->new({
@@ -153,7 +165,7 @@ This can be used for automating tasks of processing data exports etc.
 
 =head1 DESCRIPTION
 
-This module is a simple wrapper around L<WWW::Mechnize> it assists the user
+This module is a simple wrapper around L<WWW::Mechanize> it assists the user
 in getting going with automating tasks related to the DanDomain administrative
 web interface.
 
@@ -166,7 +178,7 @@ columns)
 
 =item * filling in missing data (combining data)
 
-=item * converting formats (from CSV to XML)
+=item * converting formats (from CSV to XML, JSON, CSV, whatever)
 
 =back
 
@@ -181,9 +193,9 @@ contain keys according to the following conventions:
 
 =over
 
-=item * username, the mandatory username to access DanDomain 
+=item * username, optional username credential to access DanDomain 
 
-=item * password, the mandatory password to access DanDomain
+=item * password, optional password credential to access DanDomain
 
 =item * url, the mandatory URL to retrieve data from (L</retrieve>)
 
@@ -241,6 +253,11 @@ I<untouched>.
 =head1 DIAGNOSTICS
 
 =over
+
+=item * Both username and password is required for authentication
+
+If you want to use authentication you have to provide both B<username> and
+B<password>.
 
 =item * Unable to retrieve base URL: $@
 
@@ -303,9 +320,11 @@ the distributions own test suite, instantiated the following way.
 ---------------------------- ------ ------ ------ ------ ------ ------ ------
 File                           stmt   bran   cond    sub    pod   time  total
 ---------------------------- ------ ------ ------ ------ ------ ------ ------
-blib/lib/WWW/DanDomain.pm     100.0  100.0  100.0  100.0  100.0  100.0  100.0
-Total                         100.0  100.0  100.0  100.0  100.0  100.0  100.0
+blib/lib/WWW/DanDomain.pm      92.1   78.6   50.0  100.0  100.0  100.0   85.9
+Total                          92.1   78.6   50.0  100.0  100.0  100.0   85.9
 ---------------------------- ------ ------ ------ ------ ------ ------ ------
+
+Please note the report is based on version 0.03 of WWW::DanDomain
 
 =head1 QUALITY AND CODING STANDARD
 
@@ -436,7 +455,7 @@ programming and custom solutions and who gave me the assignment.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2009 jonasbn, all rights reserved.
+Copyright 2009-2010 jonasbn, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

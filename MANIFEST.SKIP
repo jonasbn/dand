@@ -39,3 +39,4 @@
 \bWWW-DanDomain-[\d\.\_]+
 
 # Avoid project-specific files/dirs
+^MYMETA.yml$
