@@ -24,12 +24,11 @@ my $build = Module::Build->new(
         'Env'                       => '0',
     },
     requires => {
-        'Module::Build'          => '0.30',
+        'Module::Build'             => '0.30',
         'Data::Dumper'           => '0',    #Debugging
         'WWW::Mechanize'         => '0',
         'WWW::Mechanize::Cached' => '0',
         'Carp'                   => '0',
-        'Class::Rebless'         => '0',
     },
     meta_merge => {
         resources => {
