@@ -46,13 +46,15 @@ sub retrieve {
         $self->{mech}->get( $self->{base_url} )
             or croak "Unable to retrieve base URL: $@";
 
-        $self->{mech}->submit_form(
+        if (not $self->{mech}->submit_form(
             form_number => 0,
             fields      => {
                 UserName => $self->{username},
                 Password => $self->{password},
             }
-        );
+        )) {
+            croak "Unable to authenticate";
+        }
     }
     
     $self->{mech}->get( $self->{url} ) or croak "Unable to retrieve URL: $@";
@@ -253,6 +255,8 @@ I<untouched>.
 =head1 DIAGNOSTICS
 
 =over
+
+=item * Unable to authenticate, username and password not valid credentials
 
 =item * Both username and password is required for authentication
 
