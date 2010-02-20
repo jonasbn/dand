@@ -4,7 +4,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 9;
 use Carp;
 use Test::MockObject::Extends;
 use File::Slurp qw(slurp);
@@ -69,3 +69,31 @@ $wd = WWW::DanDomain->new({
 });
 
 dies_ok { $content = $wd->retrieve(); };
+
+$wd = WWW::DanDomain->new({
+	password => 'topsecret',
+	url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+    verbose  => $TEST_VERBOSE,
+    mech     => $mech,
+});
+
+dies_ok { $content = $wd->retrieve(); };
+
+$wd = WWW::DanDomain->new({
+	username => 'topshop',
+	url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+    verbose  => $TEST_VERBOSE,
+    mech     => $mech,
+});
+
+dies_ok { $content = $wd->retrieve(); };
+
+$mech->set_true('get', 'follow_link', 'submit_form');
+
+$wd = WWW::DanDomain->new({
+	url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+    verbose  => 1,
+    mech     => $mech,
+});
+
+ok($content = $wd->retrieve());

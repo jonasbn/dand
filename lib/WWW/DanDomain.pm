@@ -320,8 +320,8 @@ the distributions own test suite, instantiated the following way.
 ---------------------------- ------ ------ ------ ------ ------ ------ ------
 File                           stmt   bran   cond    sub    pod   time  total
 ---------------------------- ------ ------ ------ ------ ------ ------ ------
-blib/lib/WWW/DanDomain.pm      92.1   78.6   50.0  100.0  100.0  100.0   85.9
-Total                          92.1   78.6   50.0  100.0  100.0  100.0   85.9
+blib/lib/WWW/DanDomain.pm     100.0  100.0  100.0  100.0  100.0  100.0  100.0
+Total                         100.0  100.0  100.0  100.0  100.0  100.0  100.0
 ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 Please note the report is based on version 0.03 of WWW::DanDomain
