@@ -2,6 +2,15 @@ Revision history for WWW-DanDomain
 
 $Id$
 
+0.04    Bug fix release 21.02.2010, updated not required
+
+- Addressing failing test report
+
+    WWW-DanDomain-0.03:
+    - i386-freebsd / 5.10.1:
+    - FAIL http://www.cpantesters.org/cpan/report/6848267
+
+
 0.03    Maintenance release 20.02.2010, updated not required
 
 - Implemented handling of DanDomain access scenario where authentication credentials are not needed, since authorization is based on IP validation (feature with DanDomain)
