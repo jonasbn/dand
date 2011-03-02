@@ -56,7 +56,7 @@ sub retrieve {
             )
             )
         {
-            croak "Unable to authenticate";
+            croak 'Unable to authenticate';
         }
     }
 
