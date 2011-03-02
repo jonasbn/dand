@@ -7,7 +7,7 @@ use strict;
 use WWW::Mechanize;
 use WWW::Mechanize::Cached;
 use Carp qw(croak);
-use English qw( -no_match_vars ); 
+use English qw( -no_match_vars );
 
 our $VERSION = '0.04';
 
@@ -60,7 +60,8 @@ sub retrieve {
         }
     }
 
-    $self->{mech}->get( $self->{url} ) or croak "Unable to retrieve URL: $EVAL_ERROR";
+    $self->{mech}->get( $self->{url} )
+        or croak "Unable to retrieve URL: $EVAL_ERROR";
 
     my $content = $self->{mech}->content();
 
