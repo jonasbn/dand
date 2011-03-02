@@ -40,3 +40,7 @@
 
 # Avoid project-specific files/dirs
 ^MYMETA.yml$
+
+# Avoid Komodo files
+\.komodoproject
+\.komodotools
