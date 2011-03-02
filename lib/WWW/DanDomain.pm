@@ -7,6 +7,7 @@ use strict;
 use WWW::Mechanize;
 use WWW::Mechanize::Cached;
 use Carp qw(croak);
+use English qw( -no_match_vars ); 
 
 our $VERSION = '0.04';
 
@@ -44,7 +45,7 @@ sub retrieve {
         }
 
         $self->{mech}->get( $self->{base_url} )
-            or croak "Unable to retrieve base URL: $@";
+            or croak "Unable to retrieve base URL: $EVAL_ERROR";
 
         if (not $self->{mech}->submit_form(
                 form_number => 0,
@@ -59,7 +60,7 @@ sub retrieve {
         }
     }
 
-    $self->{mech}->get( $self->{url} ) or croak "Unable to retrieve URL: $@";
+    $self->{mech}->get( $self->{url} ) or croak "Unable to retrieve URL: $EVAL_ERROR";
 
     my $content = $self->{mech}->content();
 
