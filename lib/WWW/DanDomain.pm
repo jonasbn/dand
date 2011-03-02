@@ -38,8 +38,8 @@ sub new {
 sub retrieve {
     my ( $self, $stat ) = @_;
 
-    if ($self->{username} || $self->{password}) {
-        if ((not $self->{username}) or (not $self->{password})) {
+    if ( $self->{username} || $self->{password} ) {
+        if ( ( not $self->{username} ) or ( not $self->{password} ) ) {
             croak 'Both username and password is required for authentication';
         }
 
@@ -47,18 +47,20 @@ sub retrieve {
             or croak "Unable to retrieve base URL: $@";
 
         if (not $self->{mech}->submit_form(
-            form_number => 0,
-            fields      => {
-                UserName => $self->{username},
-                Password => $self->{password},
-            }
-        )) {
+                form_number => 0,
+                fields      => {
+                    UserName => $self->{username},
+                    Password => $self->{password},
+                }
+            )
+            )
+        {
             croak "Unable to authenticate";
         }
     }
-    
+
     $self->{mech}->get( $self->{url} ) or croak "Unable to retrieve URL: $@";
-    
+
     my $content = $self->{mech}->content();
 
     return $self->processor( \$content, $stat );
