@@ -8,17 +8,18 @@ use WWW::Mechanize;
 use WWW::Mechanize::Cached;
 use Carp qw(croak);
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub new {
     my ( $class, $param ) = @_;
 
     my $mech;
+	my $processor;
+	
     my $agent = __PACKAGE__ . "-$VERSION";
-    if ( $param->{mech} ) {
+    
+if ( $param->{mech} ) {
         $mech = $param->{mech};
-    } elsif ( $param->{cache} ) {
-        $mech = WWW::Mechanize::Cached->new( agent => $agent );
     } else {
         $mech = WWW::Mechanize->new( agent => $agent );
     }
@@ -30,6 +31,7 @@ sub new {
         url      => $param->{url},
         verbose  => $param->{verbose} || 0,
         mech     => $mech,
+		processor => $processor,
     }, $class;
 
     return $self;
@@ -61,10 +63,16 @@ sub retrieve {
     
     my $content = $self->{mech}->content();
 
-    return $self->processor( \$content, $stat );
+	if (ref $self->processor and $self->processor->can eq 'process') {
+		return $self->processor->process( \$content, $stat );
+	} elsif (ref $self->processor eq 'CODE') {
+		return &{$self->processor}( \$content, $stat );
+	} else {
+		return $self->process( \$content, $stat );
+	}
 }
 
-sub processor {
+sub process {
     my ( $self, $content ) = @_;
 
     if ( $self->{verbose} ) {
