@@ -7,15 +7,16 @@ use strict;
 use WWW::Mechanize;
 use WWW::Mechanize::Cached;
 use Carp qw(croak);
-use English qw( -no_match_vars );
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub new {
     my ( $class, $param ) = @_;
 
     my $mech;
+
     my $agent = __PACKAGE__ . "-$VERSION";
+
     if ( $param->{mech} ) {
         $mech = $param->{mech};
     } elsif ( $param->{cache} ) {
@@ -25,12 +26,13 @@ sub new {
     }
 
     my $self = bless {
-        base_url => 'http://www.billigespil.dk/admin',
-        username => $param->{username},
-        password => $param->{password},
-        url      => $param->{url},
-        verbose  => $param->{verbose} || 0,
-        mech     => $mech,
+        base_url  => 'http://www.billigespil.dk/admin',
+        username  => $param->{username},
+        password  => $param->{password},
+        url       => $param->{url},
+        verbose   => $param->{verbose} || 0,
+        mech      => $mech,
+        processor => $param->{processor},
     }, $class;
 
     return $self;
@@ -45,7 +47,7 @@ sub retrieve {
         }
 
         $self->{mech}->get( $self->{base_url} )
-            or croak "Unable to retrieve base URL: $EVAL_ERROR";
+            or croak "Unable to retrieve base URL: $@";
 
         if (not $self->{mech}->submit_form(
                 form_number => 0,
@@ -60,15 +62,26 @@ sub retrieve {
         }
     }
 
-    $self->{mech}->get( $self->{url} )
-        or croak "Unable to retrieve URL: $EVAL_ERROR";
+    $self->{mech}->get( $self->{url} ) or croak "Unable to retrieve URL: $@";
 
     my $content = $self->{mech}->content();
 
-    return $self->processor( \$content, $stat );
+    if ( ref $self->{processor} eq 'CODE' ) {
+        return &{ $self->{processor} }( \$content, $stat );
+    } elsif ( ref $self->{processor} and UNIVERSAL::can($self->{processor}, 'process' )) {
+        return $self->{processor}->process( \$content, $stat );
+    } else {
+        return $self->process( \$content, $stat );
+    }
 }
 
 sub processor {
+    my ( $self, $content ) = @_;
+
+    return $self->process($content);
+}
+
+sub process {
     my ( $self, $content ) = @_;
 
     if ( $self->{verbose} ) {
@@ -90,7 +103,7 @@ WWW::DanDomain - class to assist in interacting with DanDomain admin interface
 
 =head1 VERSION
 
-This documentation describes version 0.03
+This documentation describes version 0.05
 
 =head1 SYNOPSIS
 
@@ -169,6 +182,35 @@ This can be used for automating tasks of processing data exports etc.
     
     print $$content;
 
+
+    #Using a processor implemented as a code reference
+    $wd = WWW::DanDomain->new({
+    	username  => 'topshop',
+    	password  => 'topsecret',
+    	url       => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+    	processor => sub {                
+            ${$_[0]} =~ s/test/fest/;        
+            return $_[0];
+        },
+    });    
+
+
+    #Implementing a processor class
+    my $processor = MY::Processor->new();
+    
+    UNIVERSAL::can($processor, 'process');
+    
+    $wd = WWW::DanDomain->new({
+    	username  => 'topshop',
+    	password  => 'topsecret',
+    	url       => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+    	processor => $processor,
+    });
+    
+    my $content = $wd->retrieve();
+    
+    print ${$content};
+
 =head1 DESCRIPTION
 
 This module is a simple wrapper around L<WWW::Mechanize> it assists the user
@@ -220,6 +262,25 @@ L<WWW::Mechanize::Cached> instead of L<WWW::Mechanize>.
 
 The parameter is optional
 
+=item * processor
+
+This parameter can be used of you do not want to implement a subclass of
+WWW::DanDomain.
+
+The processor parameter can either be:
+
+=over
+
+=item * an object implementing a L</proces> method, with the following profile:
+
+    proces(\$content);
+
+=item * a code reference with the same profile, adhering to the following example:
+
+    sub { return ${$_[0]} };
+
+=back
+
 =back
 
 =head2 retrieve
@@ -239,11 +300,11 @@ retrieved from the URL provided to the contructor (L</new>). If the
 L</processor> method is overwritten you can manipulate the content prior
 to being returned.
 
-=head2 processor
+=head2 process
 
-This is a stub and it might go away in the future. It does takes the content
-retrieved (see: L</retrieve>) from the URL parameter provided to the constructor
-(see: L</new>).
+Takes the content retrieved (see: L</retrieve>) from the URL parameter provided
+to the constructor (see: L</new>). You can overwrite the behaviour via the
+constructor (see: L</new>).
 
 Parameters:
 
@@ -255,6 +316,10 @@ Parameters:
 
 The stub does however not do anything, but it returns the scalar reference
 I<untouched>.
+
+=head2 processor
+
+This is a wrapper for L</process>, provided for backwards compatibility.
 
 =head1 DIAGNOSTICS
 

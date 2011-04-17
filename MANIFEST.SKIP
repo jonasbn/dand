@@ -44,3 +44,4 @@
 # Avoid Komodo files
 \.komodoproject
 \.komodotools
+^MYMETA\.json$
