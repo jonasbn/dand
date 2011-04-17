@@ -103,7 +103,7 @@ WWW::DanDomain - class to assist in interacting with DanDomain admin interface
 
 =head1 VERSION
 
-This documentation describes version 1.00
+This documentation describes version 0.05
 
 =head1 SYNOPSIS
 
