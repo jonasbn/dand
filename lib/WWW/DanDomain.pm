@@ -182,6 +182,35 @@ This can be used for automating tasks of processing data exports etc.
     
     print $$content;
 
+
+    #Using a processor implemented as a code reference
+    $wd = WWW::DanDomain->new({
+    	username  => 'topshop',
+    	password  => 'topsecret',
+    	url       => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+    	processor => sub {                
+            ${$_[0]} =~ s/test/fest/;        
+            return $_[0];
+        },
+    });    
+
+
+    #Implementing a processor class
+    my $processor = MY::Processor->new();
+    
+    UNIVERSAL::can($processor, 'process');
+    
+    $wd = WWW::DanDomain->new({
+    	username  => 'topshop',
+    	password  => 'topsecret',
+    	url       => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+    	processor => $processor,
+    });
+    
+    my $content = $wd->retrieve();
+    
+    print ${$content};
+
 =head1 DESCRIPTION
 
 This module is a simple wrapper around L<WWW::Mechanize> it assists the user
@@ -233,6 +262,25 @@ L<WWW::Mechanize::Cached> instead of L<WWW::Mechanize>.
 
 The parameter is optional
 
+=item * processor
+
+This parameter can be used of you do not want to implement a subclass of
+WWW::DanDomain.
+
+The processor parameter can either be:
+
+=over
+
+=item * an object implementing a L</proces> method, with the following profile:
+
+    proces(\$content);
+
+=item * a code reference with the same profile, adhering to the following example:
+
+    sub { return ${$_[0]} };
+
+=back
+
 =back
 
 =head2 retrieve
@@ -254,9 +302,9 @@ to being returned.
 
 =head2 process
 
-This is a stub and it might go away in the future. It does takes the content
-retrieved (see: L</retrieve>) from the URL parameter provided to the constructor
-(see: L</new>).
+Takes the content retrieved (see: L</retrieve>) from the URL parameter provided
+to the constructor (see: L</new>). You can overwrite the behaviour via the
+constructor (see: L</new>).
 
 Parameters:
 
