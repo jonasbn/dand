@@ -8,30 +8,29 @@ use WWW::Mechanize;
 use WWW::Mechanize::Cached;
 use Carp qw(croak);
 
-our $VERSION = '0.05';
+our $VERSION = '1.00';
 
 sub new {
     my ( $class, $param ) = @_;
 
     my $mech;
-	my $processor;
-	
+
     my $agent = __PACKAGE__ . "-$VERSION";
-    
-if ( $param->{mech} ) {
+
+    if ( $param->{mech} ) {
         $mech = $param->{mech};
     } else {
         $mech = WWW::Mechanize->new( agent => $agent );
     }
 
     my $self = bless {
-        base_url => 'http://www.billigespil.dk/admin',
-        username => $param->{username},
-        password => $param->{password},
-        url      => $param->{url},
-        verbose  => $param->{verbose} || 0,
-        mech     => $mech,
-		processor => $processor,
+        base_url  => 'http://www.billigespil.dk/admin',
+        username  => $param->{username},
+        password  => $param->{password},
+        url       => $param->{url},
+        verbose   => $param->{verbose} || 0,
+        mech      => $mech,
+        processor => $param->{processor},
     }, $class;
 
     return $self;
@@ -40,8 +39,8 @@ if ( $param->{mech} ) {
 sub retrieve {
     my ( $self, $stat ) = @_;
 
-    if ($self->{username} || $self->{password}) {
-        if ((not $self->{username}) or (not $self->{password})) {
+    if ( $self->{username} || $self->{password} ) {
+        if ( ( not $self->{username} ) or ( not $self->{password} ) ) {
             croak 'Both username and password is required for authentication';
         }
 
@@ -49,27 +48,35 @@ sub retrieve {
             or croak "Unable to retrieve base URL: $@";
 
         if (not $self->{mech}->submit_form(
-            form_number => 0,
-            fields      => {
-                UserName => $self->{username},
-                Password => $self->{password},
-            }
-        )) {
-            croak "Unable to authenticate";
+                form_number => 0,
+                fields      => {
+                    UserName => $self->{username},
+                    Password => $self->{password},
+                }
+            )
+            )
+        {
+            croak 'Unable to authenticate';
         }
     }
-    
+
     $self->{mech}->get( $self->{url} ) or croak "Unable to retrieve URL: $@";
-    
+
     my $content = $self->{mech}->content();
 
-	if (ref $self->processor and $self->processor->can eq 'process') {
-		return $self->processor->process( \$content, $stat );
-	} elsif (ref $self->processor eq 'CODE') {
-		return &{$self->processor}( \$content, $stat );
-	} else {
-		return $self->process( \$content, $stat );
-	}
+    if ( ref $self->{processor} eq 'CODE' ) {
+        return &{ $self->{processor} }( \$content, $stat );
+    } elsif ( ref $self->{processor} and UNIVERSAL::can($self->{processor}, 'process' )) {
+        return $self->{processor}->process( \$content, $stat );
+    } else {
+        return $self->process( \$content, $stat );
+    }
+}
+
+sub processor {
+    my ( $self, $content ) = @_;
+
+    return $self->process($content);
 }
 
 sub process {
@@ -94,7 +101,7 @@ WWW::DanDomain - class to assist in interacting with DanDomain admin interface
 
 =head1 VERSION
 
-This documentation describes version 0.03
+This documentation describes version 1.00
 
 =head1 SYNOPSIS
 
@@ -243,7 +250,7 @@ retrieved from the URL provided to the contructor (L</new>). If the
 L</processor> method is overwritten you can manipulate the content prior
 to being returned.
 
-=head2 processor
+=head2 process
 
 This is a stub and it might go away in the future. It does takes the content
 retrieved (see: L</retrieve>) from the URL parameter provided to the constructor
@@ -259,6 +266,10 @@ Parameters:
 
 The stub does however not do anything, but it returns the scalar reference
 I<untouched>.
+
+=head2 processor
+
+This is a wrapper for L</process>, provided for backwards compatibility.
 
 =head1 DIAGNOSTICS
 
