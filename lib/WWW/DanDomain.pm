@@ -8,7 +8,7 @@ use WWW::Mechanize;
 use WWW::Mechanize::Cached;
 use Carp qw(croak);
 
-our $VERSION = '1.00';
+our $VERSION = '0.05';
 
 sub new {
     my ( $class, $param ) = @_;
@@ -19,6 +19,8 @@ sub new {
 
     if ( $param->{mech} ) {
         $mech = $param->{mech};
+    } elsif ( $param->{cache} ) {
+        $mech = WWW::Mechanize::Cached->new( agent => $agent );
     } else {
         $mech = WWW::Mechanize->new( agent => $agent );
     }
