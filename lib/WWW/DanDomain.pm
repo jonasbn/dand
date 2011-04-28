@@ -68,7 +68,9 @@ sub retrieve {
 
     if ( ref $self->{processor} eq 'CODE' ) {
         return &{ $self->{processor} }( \$content, $stat );
-    } elsif ( ref $self->{processor} and UNIVERSAL::can($self->{processor}, 'process' )) {
+    } elsif ( ref $self->{processor}
+        and UNIVERSAL::can( $self->{processor}, 'process' ) )
+    {
         return $self->{processor}->process( \$content, $stat );
     } else {
         return $self->process( \$content, $stat );
