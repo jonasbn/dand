@@ -7,6 +7,8 @@ use strict;
 use WWW::Mechanize;
 use WWW::Mechanize::Cached;
 use Carp qw(croak);
+use Try::Tiny;
+use UNIVERSAL::can;
 
 our $VERSION = '0.05';
 
@@ -68,9 +70,13 @@ sub retrieve {
 
     if ( ref $self->{processor} eq 'CODE' ) {
         return &{ $self->{processor} }( \$content, $stat );
-    } elsif ( ref $self->{processor}
-        and UNIVERSAL::can( $self->{processor}, 'process' ) )
-    {
+    } elsif ( ref $self->{processor} ) {
+        try {
+            $self->{processor}->can('process');
+        }
+        catch {
+            croak q{Your processor does not implement 'process' method};
+        };
         return $self->{processor}->process( \$content, $stat );
     } else {
         return $self->process( \$content, $stat );
@@ -187,10 +193,10 @@ This can be used for automating tasks of processing data exports etc.
 
     #Using a processor implemented as a code reference
     $wd = WWW::DanDomain->new({
-    	username  => 'topshop',
-    	password  => 'topsecret',
-    	url       => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
-    	processor => sub {                
+        username  => 'topshop',
+        password  => 'topsecret',
+        url       => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+        processor => sub {                
             ${$_[0]} =~ s/test/fest/;        
             return $_[0];
         },
@@ -203,10 +209,10 @@ This can be used for automating tasks of processing data exports etc.
     UNIVERSAL::can($processor, 'process');
     
     $wd = WWW::DanDomain->new({
-    	username  => 'topshop',
-    	password  => 'topsecret',
-    	url       => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
-    	processor => $processor,
+        username  => 'topshop',
+        password  => 'topsecret',
+        url       => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
+        processor => $processor,
     });
     
     my $content = $wd->retrieve();
