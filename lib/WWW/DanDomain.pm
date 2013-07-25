@@ -10,7 +10,7 @@ use Carp qw(croak);
 use Try::Tiny;
 use UNIVERSAL::can;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 sub new {
     my ( $class, $param ) = @_;
@@ -539,7 +539,7 @@ an issue with release 0.03
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2009-2010 jonasbn, all rights reserved.
+Copyright 2009-2013 jonasbn, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
