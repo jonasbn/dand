@@ -44,7 +44,6 @@ my $build = Module::Build->new(
             ProjectSite => 'http://logicLAB.jira.com/browse/DAND',
             ProjectWiki => 'http://logiclab.jira.com/wiki/display/DAND/Home',
         }
-        }
     },
 
 );
