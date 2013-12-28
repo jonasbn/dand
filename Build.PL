@@ -38,7 +38,7 @@ my $build = Module::Build->new(
             homepage => 'http://logicLAB.jira.com/browse/DAND',
             bugtracker =>
                 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=WWW-DanDomain',
-            repository => 'http://logicLAB.jira.com/svn/DAND',
+            repository => 'https://github.com/jonasbn/dand',
         }
     },
 
