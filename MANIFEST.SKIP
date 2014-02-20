@@ -46,3 +46,6 @@
 \.komodoproject
 \.komodotools
 ^MYMETA\.json$
+
+# Github - Travis integration
+\.travis\.yml
