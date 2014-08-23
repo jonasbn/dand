@@ -47,5 +47,10 @@
 \.komodotools
 ^MYMETA\.json$
 
-# Github - Travis integration
+# Github files
 \.travis\.yml
+README.mkdn
+
+# SublimeText 2 files
+\.sublime-project
+\.sublime-workspace
