@@ -1,4 +1,5 @@
 [![CPAN version](https://badge.fury.io/pl/WWW-DanDomain.svg)](http://badge.fury.io/pl/WWW-DanDomain)
+[![Build Status](https://travis-ci.org/jonasbn/dand.svg?branch=master)](https://travis-ci.org/jonasbn/dand)
 
 # NAME
 
