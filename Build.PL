@@ -32,6 +32,7 @@ my $build = Module::Build->new(
         'Carp'                   => '0',
         'Try::Tiny'              => '0',
         'UNIVERSAL::can'         => '0',
+        'perl'                   => '5.008', 
     },
     meta_merge => {
         resources => {

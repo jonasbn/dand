@@ -9,6 +9,7 @@ use WWW::Mechanize::Cached;
 use Carp qw(croak);
 use Try::Tiny;
 use UNIVERSAL::can;
+use 5.008;
 
 our $VERSION = '0.06';
 

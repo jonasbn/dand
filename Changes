@@ -5,6 +5,9 @@ http://logicLAB.jira.com/browse/DAND#selectedTab=com.atlassian.jira.plugin.syste
 
 HEAD
 
+- Added specification of Perl requirement as 5.8 as pointed out
+  by Perl::Critic
+
 - Added changes.t automatic assertion of the integrity of the
   Changes file see also DAND-10 [DAND-11]
 
