@@ -1,7 +1,5 @@
 package WWW::DanDomain;
 
-# $Id$
-
 use warnings;
 use strict;
 use WWW::Mechanize;
