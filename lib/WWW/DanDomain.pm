@@ -104,6 +104,14 @@ __END__
 
 =pod
 
+=begin markdown
+
+[![CPAN version](https://badge.fury.io/pl/WWW-DanDomain.svg)](http://badge.fury.io/pl/WWW-DanDomain)
+[![Build Status](https://travis-ci.org/jonasbn/dand.svg?branch=master)](https://travis-ci.org/jonasbn/dand)
+[![Coverage Status](https://coveralls.io/repos/jonasbn/dand/badge.png)](https://coveralls.io/r/jonasbn/dand)
+
+=end markdown
+
 =head1 NAME
 
 WWW::DanDomain - class to assist in interacting with DanDomain admin interface
