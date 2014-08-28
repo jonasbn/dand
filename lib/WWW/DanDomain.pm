@@ -426,7 +426,7 @@ The following policies have been disabled:
 =back
 
 L<Perl::Critic> resource file, can be located in the t/ directory of the
-distribution F<t/perlcriticrc>
+distribution F<t/perlcritic.rc>
 
 L<Perl::Tidy> resource file, can be obtained from the original author
 
@@ -450,7 +450,7 @@ Please report any bugs or feature requests via:
 
 =over
 
-=item * Subversion repository: L<http://logicLAB.jira.com/svn/DAND>
+=item * Git repository: L<https://github.com/jonasbn/dand.git>
 
 =back
 
