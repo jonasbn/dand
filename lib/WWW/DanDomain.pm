@@ -6,7 +6,6 @@ use WWW::Mechanize;
 use WWW::Mechanize::Cached;
 use Carp qw(croak);
 use Try::Tiny;
-use UNIVERSAL::can;
 use 5.008;
 
 our $VERSION = '0.07';
@@ -213,7 +212,7 @@ This can be used for automating tasks of processing data exports etc.
     #Implementing a processor class
     my $processor = MY::Processor->new();
     
-    UNIVERSAL::can($processor, 'process');
+    $processor->can('process');
     
     $wd = WWW::DanDomain->new({
         username  => 'topshop',
