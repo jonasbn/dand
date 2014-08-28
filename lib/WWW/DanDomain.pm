@@ -8,7 +8,7 @@ use Carp qw(croak);
 use Try::Tiny;
 use 5.008;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 sub new {
     my ( $class, $param ) = @_;
@@ -117,7 +117,7 @@ WWW::DanDomain - class to assist in interacting with DanDomain admin interface
 
 =head1 VERSION
 
-This documentation describes version 0.07
+This documentation describes version 0.08
 
 =head1 SYNOPSIS
 
