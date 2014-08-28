@@ -168,32 +168,32 @@ This can be used for automating tasks of processing data exports etc.
         url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
         mech     => $mech,
     });
-    
-    
+
+
     #The intended use
     package My::WWW::DanDomain::Subclass;
-    
+
     sub processor {
         my ( $self, $content ) = @_;
-        
+
         #Note the lines terminations are Windows CRLF
         my @lines = split /\r\n/, $$content;
-        
+
         ...
-        
+
         }
     }
-    
-    
+
+
     #Using your new class
     my $my = My::WWW::DanDomain::Subclass->new({
         username => 'topshop',
         password => 'topsecret',
         url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
     });
-    
+
     my $content = $my->retrieve();
-    
+
     print $$content;
 
 
@@ -202,27 +202,27 @@ This can be used for automating tasks of processing data exports etc.
         username  => 'topshop',
         password  => 'topsecret',
         url       => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
-        processor => sub {                
-            ${$_[0]} =~ s/test/fest/;        
+        processor => sub {
+            ${$_[0]} =~ s/test/fest/;
             return $_[0];
         },
-    });    
+    });
 
 
     #Implementing a processor class
     my $processor = MY::Processor->new();
-    
+
     $processor->can('process');
-    
+
     $wd = WWW::DanDomain->new({
         username  => 'topshop',
         password  => 'topsecret',
         url       => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
         processor => $processor,
     });
-    
+
     my $content = $wd->retrieve();
-    
+
     print ${$content};
 
 =head1 DESCRIPTION
@@ -255,7 +255,7 @@ contain keys according to the following conventions:
 
 =over
 
-=item * username, optional username credential to access DanDomain 
+=item * username, optional username credential to access DanDomain
 
 =item * password, optional password credential to access DanDomain
 
@@ -264,7 +264,7 @@ contain keys according to the following conventions:
 =item * mech, a L<WWW::Mechanize> object if you have a pre instantiated object
 or some other object implementing the the same API as L<WWW::Mechanize>.
 
-The parameter is optional. 
+The parameter is optional.
 
 See also cache parameter below for an example.
 
