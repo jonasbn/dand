@@ -545,9 +545,9 @@ an issue with release 0.03
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2009-2014 jonasbn, all rights reserved.
+WWW-DanDomain and related modules are (C) by Jonas B. Nielsen, (jonasbn)
+2009-2014
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+WWW-DanDomain and related modules are released under the artistic license 2.0
 
 =cut

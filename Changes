@@ -5,6 +5,8 @@ http://logicLAB.jira.com/browse/DAND#selectedTab=com.atlassian.jira.plugin.syste
 
 HEAD
 
+- Upgraded license from Artistic 1.0 to Artistic 2.0
+
 - Migrated build system from Module::Build to Dist::Zilla
 
 - Addressed Github issue #1, eliminating use of explicit use of UNIVERSAL
