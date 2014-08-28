@@ -22,6 +22,10 @@ install:
 
    - cpanm --quiet --notest Test::Kwalitee
 
+   # 5.18 croaks on Module::Build
+
+   - cpanm --quiet --notest Module::Build
+
    # Getting coveralls report
 
    - cpanm --quiet --notest Devel::Cover::Report::Coveralls
