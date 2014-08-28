@@ -49,7 +49,7 @@
 
 # Github files
 \.travis\.yml
-README.mkdn
+README\.mkdn
 
 # SublimeText 2 files
 \.sublime-project
