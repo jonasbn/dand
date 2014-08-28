@@ -7,6 +7,8 @@ HEAD
 
 - Migrated build system from Module::Build to Dist::Zilla
 
+- Addressed Github issue #1, eliminating use of explicit use of UNIVERSAL
+
 
 0.07 2014-08-23, maintenance release, updated not required
 
