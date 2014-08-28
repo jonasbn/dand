@@ -8,7 +8,7 @@ WWW::DanDomain - class to assist in interacting with DanDomain admin interface
 
 # VERSION
 
-This documentation describes version 0.07
+This documentation describes version 0.08
 
 # SYNOPSIS
 
@@ -59,32 +59,32 @@ This can be used for automating tasks of processing data exports etc.
         url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
         mech     => $mech,
     });
-    
-    
+
+
     #The intended use
     package My::WWW::DanDomain::Subclass;
-    
+
     sub processor {
         my ( $self, $content ) = @_;
-        
+
         #Note the lines terminations are Windows CRLF
         my @lines = split /\r\n/, $$content;
-        
+
         ...
-        
+
         }
     }
-    
-    
+
+
     #Using your new class
     my $my = My::WWW::DanDomain::Subclass->new({
         username => 'topshop',
         password => 'topsecret',
         url      => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
     });
-    
+
     my $content = $my->retrieve();
-    
+
     print $$content;
 
 
@@ -93,27 +93,27 @@ This can be used for automating tasks of processing data exports etc.
         username  => 'topshop',
         password  => 'topsecret',
         url       => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
-        processor => sub {                
-            ${$_[0]} =~ s/test/fest/;        
+        processor => sub {
+            ${$_[0]} =~ s/test/fest/;
             return $_[0];
         },
-    });    
+    });
 
 
     #Implementing a processor class
     my $processor = MY::Processor->new();
-    
-    UNIVERSAL::can($processor, 'process');
-    
+
+    $processor->can('process');
+
     $wd = WWW::DanDomain->new({
         username  => 'topshop',
         password  => 'topsecret',
         url       => 'http://www.billigespil.dk/admin/edbpriser-export.asp',
         processor => $processor,
     });
-    
+
     my $content = $wd->retrieve();
-    
+
     print ${$content};
 
 # DESCRIPTION
@@ -138,13 +138,13 @@ This is the constructor.
 The constructor takes a hash reference as input. The hash reference should
 contain keys according to the following conventions:
 
-- username, optional username credential to access DanDomain 
+- username, optional username credential to access DanDomain
 - password, optional password credential to access DanDomain
 - url, the mandatory URL to retrieve data from (["retrieve"](#retrieve))
 - mech, a [WWW::Mechanize](https://metacpan.org/pod/WWW::Mechanize) object if you have a pre instantiated object
 or some other object implementing the the same API as [WWW::Mechanize](https://metacpan.org/pod/WWW::Mechanize).
 
-    The parameter is optional. 
+    The parameter is optional.
 
     See also cache parameter below for an example.
 
@@ -272,7 +272,7 @@ The following policies have been disabled:
 - [Perl::Critic::Policy::InputOutput::RequireBracedFileHandleWithPrint](https://metacpan.org/pod/Perl::Critic::Policy::InputOutput::RequireBracedFileHandleWithPrint)
 
 [Perl::Critic](https://metacpan.org/pod/Perl::Critic) resource file, can be located in the t/ directory of the
-distribution `t/perlcriticrc`
+distribution `t/perlcritic.rc`
 
 [Perl::Tidy](https://metacpan.org/pod/Perl::Tidy) resource file, can be obtained from the original author
 
@@ -289,7 +289,7 @@ Please report any bugs or feature requests via:
 
 # DEVELOPMENT
 
-- Subversion repository: [http://logicLAB.jira.com/svn/DAND](http://logicLAB.jira.com/svn/DAND)
+- Git repository: [https://github.com/jonasbn/dand.git](https://github.com/jonasbn/dand.git)
 
 # TODO
 
@@ -352,6 +352,8 @@ into a package (this package) letting it loose as open source.
 - Andy Lester (petdance) the author of [WWW::Mechanize](https://metacpan.org/pod/WWW::Mechanize) and
 [WWW::Mechanize:Cached](https://metacpan.org/pod/WWW::Mechanize:Cached), this module makes easy things easy and hard things
 possible.
+- Iain Truskett, the author of [WWW::Mechanize](https://metacpan.org/pod/WWW::Mechanize) and
+[WWW::Mechanize:Cached](https://metacpan.org/pod/WWW::Mechanize:Cached)
 - Steen Schnack, who understand the power and flexibility of computer
 programming and custom solutions and who gave me the assignment.
 - Slaven Rezic, for his CPAN testers work and assistance in pointing out
@@ -359,7 +361,7 @@ an issue with release 0.03
 
 # LICENSE AND COPYRIGHT
 
-Copyright 2009-2014 jonasbn, all rights reserved.
+WWW-DanDomain and related modules are (C) by Jonas B. Nielsen, (jonasbn)
+2009-2014
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+WWW-DanDomain and related modules are released under the artistic license 2.0
