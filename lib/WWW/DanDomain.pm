@@ -535,6 +535,9 @@ into a package (this package) letting it loose as open source.
 L<WWW::Mechanize:Cached>, this module makes easy things easy and hard things
 possible.
 
+=item * Iain Truskett, the author of L<WWW::Mechanize> and
+L<WWW::Mechanize:Cached>
+
 =item * Steen Schnack, who understand the power and flexibility of computer
 programming and custom solutions and who gave me the assignment.
 
