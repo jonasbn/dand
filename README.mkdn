@@ -205,8 +205,8 @@ This is a wrapper for ["process"](#process), provided for backwards compatibilit
 - Unable to authenticate, username and password not valid credentials
 - Both username and password is required for authentication
 
-    If you want to use authentication you have to provide both __username__ and
-    __password__.
+    If you want to use authentication you have to provide both **username** and
+    **password**.
 
 - Unable to retrieve base URL: $@
 
