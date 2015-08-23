@@ -19,9 +19,11 @@ sub new {
 
     if ( $param->{mech} ) {
         $mech = $param->{mech};
-    } elsif ( $param->{cache} ) {
+    }
+    elsif ( $param->{cache} ) {
         $mech = WWW::Mechanize::Cached->new( agent => $agent );
-    } else {
+    }
+    else {
         $mech = WWW::Mechanize->new( agent => $agent );
     }
 
@@ -47,16 +49,17 @@ sub retrieve {
         }
 
         $self->{mech}->get( $self->{base_url} )
-            or croak "Unable to retrieve base URL: $@";
+          or croak "Unable to retrieve base URL: $@";
 
-        if (not $self->{mech}->submit_form(
+        if (
+            not $self->{mech}->submit_form(
                 form_number => 0,
                 fields      => {
                     UserName => $self->{username},
                     Password => $self->{password},
                 }
             )
-            )
+          )
         {
             croak 'Unable to authenticate';
         }
@@ -68,7 +71,8 @@ sub retrieve {
 
     if ( ref $self->{processor} eq 'CODE' ) {
         return &{ $self->{processor} }( \$content, $stat );
-    } elsif ( ref $self->{processor} ) {
+    }
+    elsif ( ref $self->{processor} ) {
         try {
             $self->{processor}->can('process');
         }
@@ -76,7 +80,8 @@ sub retrieve {
             croak q{Your processor does not implement 'process' method};
         };
         return $self->{processor}->process( \$content, $stat );
-    } else {
+    }
+    else {
         return $self->process( \$content, $stat );
     }
 }
